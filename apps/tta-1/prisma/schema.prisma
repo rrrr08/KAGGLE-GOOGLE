@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  role          Role      @default(TEACHER)
+  passwordHash  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  classes       Class[]
+  runs          AnalysisRun[]
+}
+
+enum Role {
+  TEACHER
+  ADMIN
+}
+
+model Class {
+  id            String    @id @default(cuid())
+  name          String
+  grade         String?
+  teacherId     String
+  teacher       User      @relation(fields: [teacherId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  students      Student[]
+  trends        ClassTrend[]
+  runs          AnalysisRun[]
+}
+
+model Student {
+  id            String    @id @default(cuid())
+  externalId    String?
+  hashedId      String    @unique
+  name          String?
+  classId       String
+  class         Class     @relation(fields: [classId], references: [id])
+  
+  skillsJson    String    // JSON string
+  notesJson     String    @default("[]")
+  interventionsJson String @default("[]")
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([classId])
+}
+
+model ClassTrend {
+  id            String    @id @default(cuid())
+  classId       String
+  class         Class     @relation(fields: [classId], references: [id])
+  snapshotDate  DateTime  @default(now())
+  
+  weaknessesJson String   // JSON array
+  trendSummaryJson String
+  versionsJson  String    @default("[]")
+  
+  createdAt     DateTime  @default(now())
+  
+  @@index([classId, snapshotDate])
+}
+
+model AnalysisRun {
+  id            String    @id @default(cuid())
+  runId         String    @unique @default(uuid())
+  classId       String
+  class         Class     @relation(fields: [classId], references: [id])
+  teacherId     String
+  teacher       User      @relation(fields: [teacherId], references: [id])
+  
+  csvPath       String?
+  initialLesson String
+  finalDraft    String
+  
+  agentAOutputJson String
+  historyJson   String
+  
+  finalScore    Float
+  passed        Boolean
+  iterations    Int
+  
+  createdAt     DateTime  @default(now())
+  
+  @@index([classId])
+  @@index([teacherId])
+}
+
+model Standard {
+  id            String    @id @default(cuid())
+  standardId    String    @unique
+  grade         String
+  subject       String
+  text          String
+  objectivesJson String   @default("[]")
+  
+  createdAt     DateTime  @default(now())
+  
+  @@index([grade, subject])
+}

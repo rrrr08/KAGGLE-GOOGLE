@@ -1,0 +1,4 @@
+student_id,question_id,score,max_score
+1,q1,4,5
+2,q1,3,5
+3,q1,5,5

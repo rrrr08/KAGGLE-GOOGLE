@@ -1,0 +1,4 @@
+student_id,question_id,score,max_score
+1,q1,invalid,5
+2,q1,abc,5
+3,q1,4.5.6,5

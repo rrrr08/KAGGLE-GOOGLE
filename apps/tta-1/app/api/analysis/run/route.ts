@@ -1,0 +1,60 @@
+import { NextRequest, NextResponse } from "next/server";
+import { Orchestrator } from "@/lib/orchestrator/workflow";
+import { parseCSV } from "@/lib/utils/csv-parser";
+
+export async function POST(request: NextRequest) {
+    try {
+        const formData = await request.formData();
+
+        const file = formData.get("file") as File;
+        const classId = formData.get("class_id") as string;
+        const teacherId = formData.get("teacher_id") as string;
+        const initialLesson = formData.get("initial_lesson") as string;
+
+        // Validate inputs
+        if (!file) {
+            return NextResponse.json({ error: "No file provided" }, { status: 400 });
+        }
+        if (!classId) {
+            return NextResponse.json({ error: "class_id is required" }, { status: 400 });
+        }
+        if (!teacherId) {
+            return NextResponse.json({ error: "teacher_id is required" }, { status: 400 });
+        }
+        if (!initialLesson) {
+            return NextResponse.json({ error: "initial_lesson is required" }, { status: 400 });
+        }
+
+        // Read file content
+        const fileContent = await file.text();
+
+        // Parse CSV
+        const parseResult = parseCSV(fileContent);
+
+        if (!parseResult.valid) {
+            return NextResponse.json(
+                { error: "Invalid CSV file", details: parseResult.errors },
+                { status: 400 }
+            );
+        }
+
+        // Run the workflow
+        const orchestrator = new Orchestrator();
+        const result = await orchestrator.runWorkflow(
+            parseResult.data,
+            initialLesson,
+            classId,
+            teacherId
+        );
+
+        // TODO: Save result to database
+
+        return NextResponse.json(result, { status: 200 });
+    } catch (error) {
+        console.error("Analysis run error:", error);
+        return NextResponse.json(
+            { error: "Internal server error", message: error instanceof Error ? error.message : "Unknown error" },
+            { status: 500 }
+        );
+    }
+}
