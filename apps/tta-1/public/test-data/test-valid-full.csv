@@ -1,0 +1,7 @@
+student_id,student_name,question_id,topic_tag,score,max_score,timestamp,item_text
+1,Alice,q1,algebra,4,5,2025-11-20,"Solve: x + 5 = 10"
+1,Alice,q2,algebra,3,5,2025-11-20,"Solve: 2x = 8"
+1,Alice,q3,geometry,5,5,2025-11-21,"Find area of square"
+2,Bob,q1,algebra,2,5,2025-11-20,"Solve: x + 5 = 10"
+2,Bob,q2,algebra,1,5,2025-11-20,"Solve: 2x = 8"
+2,Bob,q3,geometry,3,5,2025-11-21,"Find area of square"

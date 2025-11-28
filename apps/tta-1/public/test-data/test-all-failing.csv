@@ -1,0 +1,10 @@
+student_id,question_id,topic_tag,score,max_score
+1,q1,algebra,0,5
+1,q2,algebra,1,5
+1,q3,geometry,0,5
+2,q1,algebra,0,5
+2,q2,algebra,0,5
+2,q3,geometry,1,5
+3,q1,algebra,1,5
+3,q2,algebra,0,5
+3,q3,geometry,0,5
