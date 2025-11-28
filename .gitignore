@@ -1,10 +1,15 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+<<<<<<< HEAD
 # dependencies
+=======
+# Dependencies
+>>>>>>> 55e16d558616928305ead55921107988a381ef08
 node_modules
 .pnp
 .pnp.js
 
+<<<<<<< HEAD
 # testing
 coverage
 
@@ -24,14 +29,44 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+=======
+# Local env files
+>>>>>>> 55e16d558616928305ead55921107988a381ef08
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
+<<<<<<< HEAD
 # turbo
 .turbo
 
 # vercel
 .vercel
+=======
+# Testing
+coverage
+
+# Turbo
+.turbo
+
+# Vercel
+.vercel
+
+# Build Outputs
+.next/
+out/
+build
+dist
+
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Misc
+.DS_Store
+*.pem
+>>>>>>> 55e16d558616928305ead55921107988a381ef08
