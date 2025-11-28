@@ -1,0 +1,45 @@
+name: Deploy tta-1 to Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'apps/tta-1/**'
+      - 'packages/**'
+      - '.github/workflows/deploy-tta-1.yml'
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    env:
+      REGION: us-central1
+      PROJECT_ID: idyllic-catcher-479617-b6
+      SERVICE_NAME: tta-1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Build & push Docker image
+        run: |
+          IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          # Build context is root because of TurboRepo
+          docker build -f apps/tta-1/Dockerfile -t $IMAGE .
+          echo ${{ secrets.GCP_SA_KEY }} | docker login -u _json_key --password-stdin https://gcr.io
+          docker push $IMAGE
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image $IMAGE \
+            --region ${{ env.REGION }} \
+            --platform=managed \
+            --allow-unauthenticated \
+            --set-env-vars VERSION="ci-${{ github.sha }}",COMMIT_SHA="${{ github.sha }}"

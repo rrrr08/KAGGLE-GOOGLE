@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Orchestrator } from "@/lib/orchestrator/workflow";
 import { parseCSV } from "@/lib/utils/csv-parser";
+import { prisma } from "@/lib/db/client";
 
 export async function POST(request: NextRequest) {
     try {
@@ -47,7 +48,21 @@ export async function POST(request: NextRequest) {
             teacherId
         );
 
-        // TODO: Save result to database
+        // Save result to database
+        await prisma.analysisRun.create({
+            data: {
+                runId: result.run_id,
+                classId: classId,
+                teacherId: teacherId,
+                initialLesson: initialLesson,
+                finalDraft: result.final_draft,
+                agentAOutputJson: JSON.stringify(result.agent_a_summary),
+                historyJson: JSON.stringify(result.history),
+                finalScore: result.final_score,
+                passed: result.passed,
+                iterations: result.history.length,
+            },
+        });
 
         return NextResponse.json(result, { status: 200 });
     } catch (error) {
