@@ -1,0 +1,66 @@
+name: CI / Deploy to Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    env:
+      REGION: us-central1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+
+      - name: Build & push Docker image
+        run: |
+          IMAGE=gcr.io/${{ secrets.GCP_PROJECT }}/tta-agent:${{ github.sha }}
+          # Build context is apps/agent
+          docker build -f apps/agent/Dockerfile -t $IMAGE apps/agent
+          echo ${{ secrets.GCP_SA_KEY }} | docker login -u _json_key --password-stdin https://gcr.io
+          docker push $IMAGE
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy tta-agent \
+            --image $IMAGE \
+            --region $REGION \
+            --platform=managed \
+            --allow-unauthenticated \
+            --project=${{ secrets.GCP_PROJECT }} \
+            --set-env-vars VERSION="ci-${{ github.sha }}",COMMIT_SHA="${{ github.sha }}"
+
+      - name: Capture service describe (evidence)
+        run: |
+          TIMESTAMP=$(date +%s)
+          gcloud run services describe tta-agent --platform=managed --region=$REGION --project=${{ secrets.GCP_PROJECT }} --format=json > service-describe-$TIMESTAMP.json
+          jq -r '.status.url' service-describe-*.json > service-url.txt
+
+      - name: Call /status and /run_agent (smoke)
+        run: |
+          SERVICE_URL=$(cat service-url.txt)
+          curl -s $SERVICE_URL/status -o status.json || true
+          curl -s -X POST $SERVICE_URL/run_agent -H "Content-Type: application/json" -d '{"who":"ci","action":"smoke"}' -o run_response.json || true
+
+      - name: Download Cloud Build list (evidence)
+        run: |
+          gcloud builds list --project=${{ secrets.GCP_PROJECT }} --limit=5 --format=json > cloud-build-list.json || true
+
+      - name: Upload evidence artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-evidence-${{ github.sha }}
+          path: |
+            service-describe-*.json
+            service-url.txt
+            status.json
+            run_response.json
+            cloud-build-list.json
