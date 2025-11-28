@@ -2,6 +2,12 @@
 
 This Turborepo starter is maintained by the Turborepo core team.
 
+## Google Cloud Project Details
+
+- **Project Name**: Project Number :763485060134
+- **Project ID**: `idyllic-catcher-479617-b6`
+- **Project Number**: `763485060134`
+
 ## Using this example
 
 Run the following command:
@@ -17,7 +23,8 @@ This Turborepo includes the following packages/apps:
 ### Apps and Packages
 
 - `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
+- `web`: another [Next.js](https://nextjs.org/) app (with TTA Agent UI)
+- `agent`: a FastAPI agent service (Cloud Run)
 - `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
 - `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
