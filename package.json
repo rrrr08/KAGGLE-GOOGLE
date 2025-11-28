@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "GEN_AI-Capstone",
   "private": true,
   "scripts": {
     "build": "turbo run build",
