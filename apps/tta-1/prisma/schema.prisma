@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -18,17 +18,23 @@ model User {
   
   classes       Class[]
   runs          AnalysisRun[]
+  studentProfile StudentProfile?
+  teacherAssignments Assignment[] @relation("TeacherAssignments")
+  createdQuizzes Quiz[]
+  createdMaterials PracticeMaterial[]
 }
 
 enum Role {
   TEACHER
   ADMIN
+  STUDENT
 }
 
 model Class {
   id            String    @id @default(cuid())
   name          String
   grade         String?
+  classCode     String    @unique @default(cuid())
   teacherId     String
   teacher       User      @relation(fields: [teacherId], references: [id])
   createdAt     DateTime  @default(now())
@@ -37,6 +43,9 @@ model Class {
   students      Student[]
   trends        ClassTrend[]
   runs          AnalysisRun[]
+  assignments   Assignment[]
+  quizzes       Quiz[]
+  practiceMaterials PracticeMaterial[]
 }
 
 model Student {
@@ -53,6 +62,8 @@ model Student {
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  
+  profile       StudentProfile?
   
   @@index([classId])
 }
@@ -108,4 +119,113 @@ model Standard {
   createdAt     DateTime  @default(now())
   
   @@index([grade, subject])
+}
+
+model StudentProfile {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentId         String    @unique
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  grade             String?
+  parentEmail       String?
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  quizAttempts      QuizAttempt[]
+  assignments       Assignment[]
+}
+
+model Assignment {
+  id                String    @id @default(cuid())
+  title             String
+  description       String
+  dueDate           DateTime?
+  
+  classId           String
+  class             Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacherId         String
+  teacher           User      @relation("TeacherAssignments", fields: [teacherId], references: [id])
+  
+  materialId        String?
+  material          PracticeMaterial? @relation(fields: [materialId], references: [id])
+  
+  studentId         String?
+  studentProfile    StudentProfile? @relation(fields: [studentId], references: [id])
+  
+  completed         Boolean   @default(false)
+  completedAt       DateTime?
+  submissionText    String?   // Student's submission content
+  attachmentUrl     String?   // URL to uploaded file
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@index([classId])
+  @@index([studentId])
+  @@index([teacherId])
+}
+
+model Quiz {
+  id                String    @id @default(cuid())
+  title             String
+  topic             String
+  difficulty        String    // easy, medium, hard
+  
+  questionsJson     String    // JSON array of questions
+  
+  classId           String
+  class             Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  createdById       String
+  createdBy         User      @relation(fields: [createdById], references: [id])
+  
+  createdAt         DateTime  @default(now())
+  
+  attempts          QuizAttempt[]
+  
+  @@index([classId, topic])
+  @@index([createdById])
+}
+
+model QuizAttempt {
+  id                String    @id @default(cuid())
+  quizId            String
+  quiz              Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  
+  studentId         String
+  student           StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  answersJson       String    // JSON array of answers
+  score             Float
+  maxScore          Float
+  
+  startedAt         DateTime  @default(now())
+  completedAt       DateTime?
+  
+  @@index([studentId])
+  @@index([quizId])
+}
+
+model PracticeMaterial {
+  id                String    @id @default(cuid())
+  title             String
+  topic             String
+  difficulty        String
+  
+  contentMarkdown   String    // AI-generated practice content
+  exercisesJson     String    // JSON array of practice exercises
+  
+  classId           String
+  class             Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  generatedById     String
+  generatedBy       User      @relation(fields: [generatedById], references: [id])
+  
+  createdAt         DateTime  @default(now())
+  
+  assignments       Assignment[]
+  
+  @@index([classId, topic])
+  @@index([generatedById])
 }
