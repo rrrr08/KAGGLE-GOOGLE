@@ -1,29 +1,55 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { analysisFormSchema, type AnalysisFormValues } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CSVUploader } from "@/components/upload/CSVUploader";
 import { LessonContentInput } from "@/components/lesson/LessonContentInput";
 import { Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import type { WorkflowResult } from "@/types/agent";
 
-interface AnalysisFormProps {
-    onAnalysisComplete: (result: WorkflowResult) => void;
+interface ClassData {
+    id: string;
+    name: string;
 }
 
-export function AnalysisForm({ onAnalysisComplete }: AnalysisFormProps) {
+interface AnalysisFormProps {
+    onAnalysisComplete: (result: WorkflowResult) => void;
+    teacherId: string;
+}
+
+export function AnalysisForm({ onAnalysisComplete, teacherId }: AnalysisFormProps) {
     const [loading, setLoading] = useState(false);
+    const [classes, setClasses] = useState<ClassData[]>([]);
+
+    useEffect(() => {
+        const fetchClasses = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await fetch("/api/teacher/classes", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setClasses(data.classes);
+                }
+            } catch (error) {
+                console.error("Failed to fetch classes:", error);
+            }
+        };
+        fetchClasses();
+    }, []);
 
     const form = useForm<AnalysisFormValues>({
         resolver: zodResolver(analysisFormSchema),
         defaultValues: {
-            classId: "7A",
-            teacherId: "T1",
+            classId: "",
+            teacherId: teacherId,
             initialLesson:
                 "Today we will learn about solving equations.\n\nAn equation is a mathematical statement that two expressions are equal.\n\nExample: x + 5 = 10\n\nTo solve, subtract 5 from both sides: x = 5",
         },
@@ -87,12 +113,22 @@ export function AnalysisForm({ onAnalysisComplete }: AnalysisFormProps) {
                 <CardContent className="space-y-4">
                     <div className="grid gap-4 md:grid-cols-2">
                         <div>
-                            <label className="mb-2 block text-sm font-medium">Class ID</label>
-                            <input
-                                {...form.register("classId")}
-                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                placeholder="e.g., 7A"
-                            />
+                            <label className="mb-2 block text-sm font-medium">Class</label>
+                            <Select
+                                onValueChange={(value) => form.setValue("classId", value, { shouldValidate: true })}
+                                value={form.watch("classId")}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a class" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {classes.map((c) => (
+                                        <SelectItem key={c.id} value={c.id}>
+                                            {c.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                             {form.formState.errors.classId && (
                                 <p className="mt-1 text-sm text-red-500">{form.formState.errors.classId.message}</p>
                             )}
@@ -101,12 +137,9 @@ export function AnalysisForm({ onAnalysisComplete }: AnalysisFormProps) {
                             <label className="mb-2 block text-sm font-medium">Teacher ID</label>
                             <input
                                 {...form.register("teacherId")}
-                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                placeholder="e.g., T1"
+                                className="w-full rounded-md border border-input bg-muted px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                readOnly
                             />
-                            {form.formState.errors.teacherId && (
-                                <p className="mt-1 text-sm text-red-500">{form.formState.errors.teacherId.message}</p>
-                            )}
                         </div>
                     </div>
                 </CardContent>

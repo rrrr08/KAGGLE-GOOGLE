@@ -1,0 +1,16 @@
+student_id,student_name,question_id,topic_tag,score,max_score
+S001,Alice Johnson,Q1,Algebra,10,10
+S001,Alice Johnson,Q2,Geometry,8,10
+S001,Alice Johnson,Q3,Calculus,5,10
+S002,Bob Smith,Q1,Algebra,9,10
+S002,Bob Smith,Q2,Geometry,7,10
+S002,Bob Smith,Q3,Calculus,4,10
+S003,Charlie Brown,Q1,Algebra,10,10
+S003,Charlie Brown,Q2,Geometry,9,10
+S003,Charlie Brown,Q3,Calculus,6,10
+S004,Diana Prince,Q1,Algebra,6,10
+S004,Diana Prince,Q2,Geometry,5,10
+S004,Diana Prince,Q3,Calculus,3,10
+S005,Evan Wright,Q1,Algebra,4,10
+S005,Evan Wright,Q2,Geometry,4,10
+S005,Evan Wright,Q3,Calculus,2,10
