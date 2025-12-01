@@ -61,6 +61,7 @@ export default function AuthPage() {
 
         const formData = new FormData(e.currentTarget);
         const role = formData.get("role") as "TEACHER" | "STUDENT";
+
         const signupData: any = {
             email: formData.get("email") as string,
             password: formData.get("password") as string,
@@ -69,9 +70,13 @@ export default function AuthPage() {
         };
 
         if (role === "STUDENT") {
-            signupData.classCode = formData.get("classCode") as string;
-            signupData.grade = formData.get("grade") as string;
-            signupData.parentEmail = formData.get("parentEmail") as string;
+            const classCode = formData.get("classCode") as string;
+            const grade = formData.get("grade") as string;
+            const parentEmail = formData.get("parentEmail") as string;
+
+            if (classCode) signupData.classCode = classCode;
+            if (grade) signupData.grade = grade;
+            if (parentEmail) signupData.parentEmail = parentEmail;
         }
 
         try {
@@ -182,6 +187,7 @@ export default function AuthPage() {
                                         name="role"
                                         className="w-full rounded-md border border-input bg-background px-3 py-2"
                                         required
+                                        defaultValue="TEACHER"
                                         onChange={(e) => {
                                             const studentFields = document.getElementById("student-fields");
                                             if (studentFields) {
@@ -190,8 +196,8 @@ export default function AuthPage() {
                                             }
                                         }}
                                     >
-                                        <option value="STUDENT">Student</option>
                                         <option value="TEACHER">Teacher</option>
+                                        <option value="STUDENT">Student</option>
                                     </select>
                                 </div>
 
@@ -225,7 +231,7 @@ export default function AuthPage() {
                                     </p>
                                 </div>
 
-                                <div id="student-fields" className="space-y-4">
+                                <div id="student-fields" className="space-y-4" style={{ display: 'none' }}>
                                     <div className="space-y-2">
                                         <Label htmlFor="signup-classCode">Class Code</Label>
                                         <Input

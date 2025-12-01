@@ -1,6 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+import { getGenerativeModel } from "@/lib/ai/gemini";
 
 export interface PracticeExercise {
     question: string;
@@ -22,7 +20,7 @@ export async function generatePracticeMaterial(
     difficulty: "easy" | "medium" | "hard",
     weaknessContext?: string
 ): Promise<PracticeMaterialContent> {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    const model = getGenerativeModel();
     const prompt = `You are an expert educational content creator. Create a practice material for the topic "${topic}" with difficulty "${difficulty}".
     
     Context: ${weaknessContext || "General practice"}

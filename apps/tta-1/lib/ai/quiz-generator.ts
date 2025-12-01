@@ -1,6 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-
+import { getGenerativeModel } from "@/lib/ai/gemini";
 
 export interface QuizQuestion {
     id: string;
@@ -23,8 +21,7 @@ export async function generateQuiz(
     difficulty: "easy" | "medium" | "hard" = "medium",
     weaknessContext?: string
 ): Promise<GeneratedQuiz> {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = getGenerativeModel();
 
     const prompt = `You are an expert educational assessment creator. Generate a quiz to test student understanding.
 
@@ -61,7 +58,31 @@ Format your response as a JSON object with this structure:
 
 The correctAnswer should be the index (0-3) of the correct option in the options array.`;
 
-    const result = await model.generateContent(prompt);
+    let retries = 0;
+    const maxRetries = 3;
+    let result;
+
+    while (retries < maxRetries) {
+        try {
+            result = await model.generateContent(prompt);
+            break;
+        } catch (error: any) {
+            if (error.status === 429 || error.message?.includes("429")) {
+                retries++;
+                if (retries === maxRetries) throw error;
+                
+                // Wait for 2^retries * 1000ms (2s, 4s, 8s)
+                const delay = Math.pow(2, retries) * 1000;
+                console.log(`Rate limit hit. Retrying in ${delay}ms...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    if (!result) throw new Error("Failed to generate quiz after retries");
+
     const response = result.response.text();
 
     // Extract JSON from response (handle markdown code blocks)

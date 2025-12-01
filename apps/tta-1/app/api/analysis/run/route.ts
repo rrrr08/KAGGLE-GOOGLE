@@ -13,16 +13,29 @@ export async function POST(request: NextRequest) {
         const initialLesson = formData.get("initial_lesson") as string;
 
         // Validate inputs
+        // Validate inputs
+        console.log("Analysis Run Inputs:", {
+            fileName: file?.name,
+            fileSize: file?.size,
+            classId,
+            teacherId,
+            initialLessonLength: initialLesson?.length
+        });
+
         if (!file) {
+            console.log("Error: No file provided");
             return NextResponse.json({ error: "No file provided" }, { status: 400 });
         }
         if (!classId) {
+            console.log("Error: class_id is required");
             return NextResponse.json({ error: "class_id is required" }, { status: 400 });
         }
         if (!teacherId) {
+            console.log("Error: teacher_id is required");
             return NextResponse.json({ error: "teacher_id is required" }, { status: 400 });
         }
         if (!initialLesson) {
+            console.log("Error: initial_lesson is required");
             return NextResponse.json({ error: "initial_lesson is required" }, { status: 400 });
         }
 
@@ -33,6 +46,7 @@ export async function POST(request: NextRequest) {
         const parseResult = parseCSV(fileContent);
 
         if (!parseResult.valid) {
+            console.log("CSV Validation Errors:", parseResult.errors);
             return NextResponse.json(
                 { error: "Invalid CSV file", details: parseResult.errors },
                 { status: 400 }

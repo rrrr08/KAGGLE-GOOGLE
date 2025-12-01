@@ -24,10 +24,11 @@ export async function POST(request: NextRequest) {
 
         // Get student profile to verify ownership
         const studentProfile = await prisma.studentProfile.findUnique({
-            where: { id: data.studentId },
+            where: { studentId: data.studentId },
         });
 
         if (!studentProfile) {
+            console.log("Error: Student profile not found for ID:", data.studentId);
             return NextResponse.json(
                 { error: "Student profile not found" },
                 { status: 404 }
@@ -36,6 +37,7 @@ export async function POST(request: NextRequest) {
 
         // Verify ownership
         if (studentProfile.userId !== user.userId) {
+            console.log("Error: Unauthorized access. Profile user:", studentProfile.userId, "Auth user:", user.userId);
             return NextResponse.json(
                 { error: "Unauthorized access" },
                 { status: 403 }
@@ -48,6 +50,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!quiz) {
+            console.log("Error: Quiz not found for ID:", data.quizId);
             return NextResponse.json({ error: "Quiz not found" }, { status: 404 });
         }
 
@@ -81,7 +84,7 @@ export async function POST(request: NextRequest) {
         const attempt = await prisma.quizAttempt.create({
             data: {
                 quizId: data.quizId,
-                studentId: data.studentId,
+                studentId: studentProfile.id,
                 answersJson: JSON.stringify(data.answers),
                 score,
                 maxScore,

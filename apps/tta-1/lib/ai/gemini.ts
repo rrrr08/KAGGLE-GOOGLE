@@ -9,7 +9,7 @@ if (!apiKey) {
 export const genAI = new GoogleGenerativeAI(apiKey);
 
 // Default model for text generation
-export const getGenerativeModel = (modelName: string = "gemini-1.5-flash") => {
+export const getGenerativeModel = (modelName: string = "gemini-2.0-flash-lite-preview-02-05") => {
     return genAI.getGenerativeModel({ model: modelName });
 };
 

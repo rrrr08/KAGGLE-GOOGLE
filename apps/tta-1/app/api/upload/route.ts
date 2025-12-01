@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { getAuthUser } from "@/lib/auth/middleware";
 
@@ -28,6 +28,9 @@ export async function POST(request: NextRequest) {
         // Save to public/uploads
         const uploadDir = join(process.cwd(), "public", "uploads");
         const filepath = join(uploadDir, finalFilename);
+
+        // Ensure directory exists
+        await mkdir(uploadDir, { recursive: true });
 
         await writeFile(filepath, buffer);
 

@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         // Get quiz attempts in time range
         const quizAttempts = await prisma.quizAttempt.findMany({
             where: {
-                studentId: studentProfile.studentId,
+                studentId: studentProfile.id,
                 completedAt: {
                     gte: startDate,
                 },

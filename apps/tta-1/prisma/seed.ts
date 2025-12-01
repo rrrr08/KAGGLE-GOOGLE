@@ -1,4 +1,5 @@
 import { PrismaClient, Role } from "@prisma/client";
+import { hashPassword } from "../lib/auth/password";
 
 const prisma = new PrismaClient();
 
@@ -6,13 +7,14 @@ async function main() {
     console.log("Start seeding...");
 
     // 1. Create Teacher
+    const passwordHash = await hashPassword("password123");
     const teacher = await prisma.user.upsert({
         where: { email: "teacher@example.com" },
         update: {},
         create: {
             email: "teacher@example.com",
             name: "Sarah Johnson",
-            passwordHash: "hashed_password_123", // In real app, use bcrypt
+            passwordHash,
             role: Role.TEACHER,
         },
     });
@@ -20,10 +22,13 @@ async function main() {
     console.log(`Created teacher: ${teacher.name}`);
 
     // 2. Create Classes
-    const mathClass = await prisma.class.create({
-        data: {
+    const mathClass = await prisma.class.upsert({
+        where: { id: "cmindgjyn0004w4yg0fcyruv1" },
+        update: {},
+        create: {
             name: "Algebra I - Period 2",
             grade: "9th",
+            classCode: "cmindgjyn0004w4yg0fcyruv1",
             teacherId: teacher.id,
             trends: {
                 create: {
@@ -49,8 +54,10 @@ async function main() {
     ];
 
     for (let i = 0; i < studentNames.length; i++) {
-        await prisma.student.create({
-            data: {
+        await prisma.student.upsert({
+            where: { hashedId: `student_${i + 1}` },
+            update: {},
+            create: {
                 hashedId: `student_${i + 1}`,
                 name: studentNames[i],
                 classId: mathClass.id,

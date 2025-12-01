@@ -71,14 +71,20 @@ export function AnalysisForm({ onAnalysisComplete, teacherId }: AnalysisFormProp
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || "Analysis failed");
+                const errorMessage = errorData.details
+                    ? `${errorData.error}: ${errorData.details.join(", ")}`
+                    : errorData.error || "Analysis failed";
+                throw new Error(errorMessage);
             }
 
             const result = await response.json();
             onAnalysisComplete(result);
             toast.success("Lesson analysis complete!");
         } catch (error) {
-            toast.error(error instanceof Error ? error.message : "An error occurred");
+            console.error("Analysis error:", error);
+            toast.error(error instanceof Error ? error.message : "An error occurred", {
+                duration: 5000, // Show for longer if there are details
+            });
         } finally {
             setLoading(false);
         }
