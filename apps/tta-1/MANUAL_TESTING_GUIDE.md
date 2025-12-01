@@ -1,11 +1,11 @@
-# TTA-1 Manual Testing Guide 🧪
+# PRASHIKSHAN Manual Testing Guide 🧪
 
 > **Presentation Mode**: You can view this file as a guide or presentation for your manual testing session.
 
 ---
 
 ## 1. Introduction
-**Goal**: Verify the "Teacher's Teacher Assistant" (TTA-1) application is production-ready.
+**Goal**: Verify the "Teacher's Teacher Assistant" (PRASHIKSHAN) application is production-ready.
 **Scope**:
 - File Upload & Analysis
 - AI Lesson Improvement

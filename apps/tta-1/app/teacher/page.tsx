@@ -78,7 +78,7 @@ export default function TeacherPage() {
                                 <BookOpen className="h-6 w-6" />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold tracking-tight">TTA-1</h1>
+                                <h1 className="text-xl font-bold tracking-tight">PRASHIKSHAN</h1>
                                 <p className="text-xs font-medium text-muted-foreground">Teacher's Assistant</p>
                             </div>
                         </div>

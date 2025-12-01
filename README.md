@@ -1,4 +1,4 @@
-# KAGGLE-GOOGLE: The Teacher's Teacher Assistant (TTA-1)
+# KAGGLE-GOOGLE: The Teacher's Teacher Assistant (PRASHIKSHAN)
 
 A comprehensive solution for the Google Generative AI Capstone, designed to empower teachers with AI-driven insights and automated lesson improvements.
 
@@ -11,7 +11,7 @@ Teachers today face significant challenges in personalizing education:
 
 ## 💡 Solution
 
-**TTA-1 (The Teacher's Teacher Assistant)** is a multi-agent AI system that acts as a force multiplier for educators. It leverages Google's Gemini API to automate the analysis, auditing, and improvement of teaching materials.
+**PRASHIKSHAN (The Teacher's Teacher Assistant)** is a multi-agent AI system that acts as a force multiplier for educators. It leverages Google's Gemini API to automate the analysis, auditing, and improvement of teaching materials.
 
 ### Key Features
 - **🤖 Multi-Agent Workflow**:
@@ -33,7 +33,7 @@ graph TD
         Student[Student Portal]
     end
 
-    subgraph "TTA-1 Core (Next.js)"
+    subgraph "PRASHIKSHAN Core (Next.js)"
         API[API Routes]
         Orchestrator[Workflow Orchestrator]
         
@@ -119,7 +119,7 @@ To run the entire monorepo (all apps):
 pnpm dev
 ```
 
-To run only the **TTA-1** application:
+To run only the **PRASHIKSHAN** application:
 ```bash
 cd apps/tta-1
 pnpm dev

@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "TTA-1 - The Teacher's Teacher Assistant",
+  title: "PRASHIKSHAN - The Teacher's Teacher Assistant",
   description: "AI-powered lesson enhancement using student performance data",
 };
 

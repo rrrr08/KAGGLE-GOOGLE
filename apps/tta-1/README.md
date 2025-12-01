@@ -1,6 +1,6 @@
-# TTA-1 (The Teacher's Teacher Assistant)
+# PRASHIKSHAN (The Teacher's Teacher Assistant)
 
-A Next.js-based multi-agent system that analyzes student performance data and automatically improves teaching materials using AI.
+PRASHIKSHAN is a Next.js-based multi-agent system that analyzes student performance data and automatically improves teaching materials using AI.
 
 ## Features
 

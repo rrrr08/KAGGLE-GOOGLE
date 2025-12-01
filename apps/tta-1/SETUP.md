@@ -1,4 +1,4 @@
-# TTA-1 Setup Guide
+# PRASHIKSHAN Setup Guide
 
 ## Quick Start
 

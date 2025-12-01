@@ -2,7 +2,7 @@
 
 ## Overview
 
-TTA-1 now includes a comprehensive student portal with AI-powered personalized learning features. Students can view their weak areas, access AI-generated practice materials, take adaptive quizzes, and track their progress over time.
+PRASHIKSHAN now includes a comprehensive student portal with AI-powered personalized learning features. Students can view their weak areas, access AI-generated practice materials, take adaptive quizzes, and track their progress over time.
 
 ## What's New
 

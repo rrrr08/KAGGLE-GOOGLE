@@ -1,4 +1,4 @@
-# TTA-1 Testing Guide
+# PRASHIKSHAN Testing Guide
 
 ## Test Suite Overview
 

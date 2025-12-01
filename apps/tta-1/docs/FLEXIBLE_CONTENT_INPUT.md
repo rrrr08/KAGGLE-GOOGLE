@@ -2,7 +2,7 @@
 
 ## Overview
 
-The TTA-1 system now supports **multiple ways** to provide lesson content, making it more flexible and user-friendly for teachers.
+The PRASHIKSHAN system now supports **multiple ways** to provide lesson content, making it more flexible and user-friendly for teachers.
 
 ## Input Methods
 
@@ -148,4 +148,4 @@ Potential additions:
 
 ## Summary
 
-The flexible content input feature makes TTA-1 more versatile by supporting multiple ways to provide lesson content. Teachers can now choose the method that best fits their workflow, whether that's typing directly, uploading existing files, or fetching content from online resources.
+The flexible content input feature makes PRASHIKSHAN more versatile by supporting multiple ways to provide lesson content. Teachers can now choose the method that best fits their workflow, whether that's typing directly, uploading existing files, or fetching content from online resources.

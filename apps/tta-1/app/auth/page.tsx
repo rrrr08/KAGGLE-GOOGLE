@@ -132,7 +132,7 @@ export default function AuthPage() {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20 mb-4">
                         <BookOpen className="h-6 w-6" />
                     </div>
-                    <CardTitle className="text-2xl font-bold">Welcome to TTA-1</CardTitle>
+                    <CardTitle className="text-2xl font-bold">Welcome to PRASHIKSHAN</CardTitle>
                     <CardDescription>Sign in to your account or create a new one</CardDescription>
                 </CardHeader>
 
